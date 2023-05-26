@@ -36,6 +36,7 @@ def update_clock():
     now = datetime.datetime.now()
     if(int(now.strftime("%H")) >= 13):
         hour = int(now.strftime("%H")) - 12
+        hour=str(hour)
         current_time = now.strftime("오후 "+hour+":%M")
     else:
         current_time = now.strftime("오전 %H:%M")
