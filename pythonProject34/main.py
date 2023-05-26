@@ -13,29 +13,37 @@ SW = "e"
 # 인코딩 된 값을 넣은 query를 넣어요
 query = "/openapi/service/rest/FungiService/fngsIlstrSearch?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&st=2&sw="+ SW+"&numOfRows=1000&pageNo=1"
 
-# 버섯표본 번호를 적어줘야해용
-Q1 = "FB2012112400000141"
-
 # gif 관련 변수에용
 frameCnt_1 = 11
 frames_1 = [PhotoImage(file='C_D_mr.gif', format='gif -index %i' % i).subsample(4) for i in range(frameCnt_1)]
+
+frameCnt_2 = 16
+frames_2 = [PhotoImage(file='D_mr2.gif', format='gif -index %i' % i).subsample(4) for i in range(frameCnt_2)]
 
 # 시간 관련
 date = datetime.date.today()
 
 def InitTopText():
-    TempFont = font.Font(g_Tk, size=20, weight='bold', family='Consolas')
+    TempFont = font.Font(g_Tk, size=20, weight='bold', family='Malgun Gothic')
     MainText = Label(g_Tk, font=TempFont, text="[버섯도리]")
     MainText.pack()
     MainText.place(x=400)
 
-def InitGif(ind):
+def InitGif_1(ind):
     frame = frames_1[ind]
     ind += 1
     if ind == frameCnt_1:
         ind = 0
-    label.configure(image=frame)
-    g_Tk.after(25, InitGif, ind)
+    label_1.configure(image=frame)
+    g_Tk.after(25, InitGif_1, ind)
+
+def InitGif_2(ind):
+    frame = frames_2[ind]
+    ind += 1
+    if ind == frameCnt_2:
+        ind = 0
+    label_2.configure(image=frame)
+    g_Tk.after(50, InitGif_2, ind)
 
 def Search():
     import http.client
@@ -47,7 +55,7 @@ def Search():
     DataList.clear()
 
     strXml = req.read().decode('utf-8')
-    print(strXml)
+    # print(strXml)
 
     from xml.etree import ElementTree
     tree = ElementTree.fromstring(strXml)
@@ -72,7 +80,6 @@ def Search():
 
         DataList.append((familyKorNm_text,fngsGnrlNm_text,fngsPilbkNo_text))
 
-    print(len(DataList))
     for i in range(len(DataList)):
         RenderText.insert(INSERT, "[")
         RenderText.insert(INSERT, i+1)
@@ -111,9 +118,13 @@ def update_clock():
 InitTopText()
 
 # gif 부분 입니다
-label = Label(g_Tk, bg='white')
-label.place(x=50, y=50, anchor=CENTER)
-g_Tk.after(0, InitGif, 0)
+label_1 = Label(g_Tk, bg='white')
+label_1.place(x=180, y=61, anchor=CENTER)
+g_Tk.after(0, InitGif_1, 0)
+
+label_2 = Label(g_Tk, bg='white')
+label_2.place(x=60, y=62, anchor=CENTER)
+g_Tk.after(0, InitGif_2, 0)
 
 # 시간 관련 부분입니다
 date_label = Label(g_Tk, font=("Arial", 20))
