@@ -6,7 +6,12 @@ g_Tk = Tk()
 g_Tk.geometry("1000x600")
 DataList = []
 url = "openapi.nature.go.kr"
-query = "/openapi/service/rest/FungiService/fngsSpcmInfo?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&q1=FB2012112400000141"
+
+# st는 2번(학명) sw는 e -> 학명에 'e'가 들어가는것 출력
+SW = "e"
+
+# 인코딩 된 값을 넣은 query를 넣어요
+query = "/openapi/service/rest/FungiService/fngsIlstrSearch?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&st=2&sw="+ SW+"&numOfRows=1000&pageNo=1"
 
 # 버섯표본 번호를 적어줘야해용
 Q1 = "FB2012112400000141"
@@ -31,6 +36,62 @@ def InitGif(ind):
         ind = 0
     label.configure(image=frame)
     g_Tk.after(100, InitGif, ind)
+
+def Search():
+    import http.client
+    conn = http.client.HTTPConnection(url)
+    conn.request("GET", query)
+    req = conn.getresponse()
+
+    global DataList
+    DataList.clear()
+
+    strXml = req.read().decode('utf-8')
+    print(strXml)
+
+    from xml.etree import ElementTree
+    tree = ElementTree.fromstring(strXml)
+
+    # item 엘리먼트를 가져옵니다.
+    itemElements = tree.iter("item") #return list type
+    # print(itemElements)
+
+
+    RenderText = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+    RenderText.pack()
+    RenderText.place(x=300,y=100)
+
+    for item in itemElements:
+        familyKorNm = item.find("familyKorNm")
+        fngsGnrlNm = item.find("fngsGnrlNm")
+        fngsPilbkNo = item.find("fngsPilbkNo")
+
+        familyKorNm_text = familyKorNm.text if familyKorNm is not None else ""
+        fngsGnrlNm_text = fngsGnrlNm.text if fngsGnrlNm is not None else ""
+        fngsPilbkNo_text = fngsPilbkNo.text if fngsPilbkNo is not None else ""
+
+        DataList.append((familyKorNm_text,fngsGnrlNm_text,fngsPilbkNo_text))
+
+    print(len(DataList))
+    for i in range(len(DataList)):
+        RenderText.insert(INSERT, "[")
+        RenderText.insert(INSERT, i+1)
+        RenderText.insert(INSERT, "]\n")
+        RenderText.insert(INSERT, " 과국명: ")
+        RenderText.insert(INSERT, DataList[i][0])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 국명: ")
+        RenderText.insert(INSERT, DataList[i][1])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 도감번호: ")
+        RenderText.insert(INSERT, DataList[i][2])
+        RenderText.insert(INSERT, "\n\n")
+
+    RenderTextScrollbar = Scrollbar(g_Tk)
+    RenderTextScrollbar.pack()
+    RenderTextScrollbar.place(x=375, y=200)
+    RenderTextScrollbar.config(command=RenderText.yview)
+    RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
 
 def update_clock():
     now = datetime.datetime.now()
@@ -62,5 +123,5 @@ time_label = Label(g_Tk, font=("Arial", 18))
 time_label.pack()
 
 update_clock()
-
+Search()
 g_Tk.mainloop()
