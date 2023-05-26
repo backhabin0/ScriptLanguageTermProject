@@ -17,8 +17,8 @@ query = "/openapi/service/rest/FungiService/fngsIlstrSearch?ServiceKey=fGahpMpOd
 Q1 = "FB2012112400000141"
 
 # gif 관련 변수에용
-frameCnt = 4
-frames = [PhotoImage(file='MR.gif', format='gif -index %i' % i).subsample(2) for i in range(frameCnt)]
+frameCnt_1 = 11
+frames_1 = [PhotoImage(file='C_D_mr.gif', format='gif -index %i' % i).subsample(4) for i in range(frameCnt_1)]
 
 # 시간 관련
 date = datetime.date.today()
@@ -30,12 +30,12 @@ def InitTopText():
     MainText.place(x=400)
 
 def InitGif(ind):
-    frame = frames[ind]
+    frame = frames_1[ind]
     ind += 1
-    if ind == frameCnt:
+    if ind == frameCnt_1:
         ind = 0
     label.configure(image=frame)
-    g_Tk.after(100, InitGif, ind)
+    g_Tk.after(25, InitGif, ind)
 
 def Search():
     import http.client
