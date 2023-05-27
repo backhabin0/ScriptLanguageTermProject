@@ -49,25 +49,25 @@ def InitSearchListBox():
     global SearchListBox
     ListBoxScrollbar = Scrollbar(g_Tk)
     ListBoxScrollbar.pack()
-    ListBoxScrollbar.place(x=0, y=0)
+    ListBoxScrollbar.place(x=230, y=130)
 
     TempFont = font.Font(g_Tk, size=15, weight='bold', family='Consolas')
     SearchListBox = Listbox(g_Tk, font=TempFont, activestyle='none',
-                            width=20, height=20, borderwidth=1,
+                            width=20, height=18, borderwidth=1,
                             yscrollcommand=ListBoxScrollbar.set)
     unique_data_list = list(set([item[0] for item in DataList]))
     for item in unique_data_list:
         SearchListBox.insert('end', item)
     SearchListBox.pack()
-    SearchListBox.place(x=10, y=100)
+    SearchListBox.place(x=10, y=130)
 
     ListBoxScrollbar.config(command=SearchListBox.yview)
 
 def InitSearchButton():
-    TempFont= font.Font(g_Tk,size=20,weight='bold',family='Consolas')
+    TempFont= font.Font(g_Tk,size=14,weight='bold',family='Consolas')
     SearchButton=Button(g_Tk,font = TempFont,text="검색",command=SearchButtonAction)
     SearchButton.pack()
-    SearchButton.place(x=100,y=0)
+    SearchButton.place(x=70,y=565)
 def SearchButtonAction():
     global S_data
     global SearchListBox
@@ -81,11 +81,14 @@ def SearchButtonAction():
     S_data.place(x=300, y=100)
     for i in range(len(DataList)):
         if DataList[i][0][0] == M_search:
-            S_data.insert('end', str(DataList[i][0]))
-            S_data.insert('end', "\n")
-            S_data.insert('end', str(DataList[i][1]))
-            S_data.insert('end', "\n")
-            S_data.insert('end', str(DataList[i][2]))
+            S_data.insert(INSERT, " 과국명: ")
+            S_data.insert(INSERT, DataList[i][0])
+            S_data.insert(INSERT, "\n")
+            S_data.insert(INSERT, " 국명: ")
+            S_data.insert(INSERT, DataList[i][1])
+            S_data.insert(INSERT, "\n")
+            S_data.insert(INSERT, " 도감번호: ")
+            S_data.insert(INSERT, DataList[i][2])
             S_data.insert('end', "\n\n")
 
     #RenderText.insert(INSERT, DataList[i][0])
