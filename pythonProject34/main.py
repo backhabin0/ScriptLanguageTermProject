@@ -186,7 +186,9 @@ def update_clock():
     date_label.place(x=750,y=500)
     time_label.place(x=800,y=550)
 
-
+def search_word():
+    word = entry.get()  # 입력된 단어 가져오기
+    print(word)
 
 
 InitTopText()
@@ -201,15 +203,25 @@ label_2.place(x=60, y=62, anchor=CENTER)
 g_Tk.after(0, InitGif_2, 0)
 
 # 시간 관련 부분입니다
-date_label = Label(g_Tk, font=("Arial", 20))
+date_label = Label(g_Tk, font=("console", 20))
 date_label.pack()
 
-time_label = Label(g_Tk, font=("Arial", 18))
+time_label = Label(g_Tk, font=("console", 18))
 time_label.pack()
 
 update_clock()
 Search()
 InitSearchListBox()
 InitSearchButton()
+
+# 입력
+entry = Entry(g_Tk, width=22, font=('console 20'))
+entry.pack()
+entry.place(x=300, y=80)
+
+# 검색 버튼
+button = Button(g_Tk, text="검색", command=search_word)
+button.pack()
+button.place(x=640, y=80)
 
 g_Tk.mainloop()
