@@ -34,9 +34,17 @@ def InitGif_1(ind):
     ind += 1
     if ind == frameCnt_1:
         ind = 0
-<<<<<<< HEAD
-    label.configure(image=frame)
-    g_Tk.after(100, InitGif, ind)
+    label_1.configure(image=frame)
+    g_Tk.after(100, InitGif_1, ind)
+
+def InitGif_2(ind):
+    frame = frames_2[ind]
+    ind += 1
+    if ind == frameCnt_2:
+        ind = 0
+    label_2.configure(image=frame)
+    g_Tk.after(50, InitGif_2, ind)
+
 def InitSearchListBox():
     global SearchListBox
     ListBoxScrollbar = Scrollbar(g_Tk)
@@ -59,7 +67,7 @@ def InitSearchButton():
     TempFont= font.Font(g_Tk,size=20,weight='bold',family='Consolas')
     SearchButton=Button(g_Tk,font = TempFont,text="검색",command=SearchButtonAction)
     SearchButton.pack()
-    SearchButton.place(x=100   ,y=0)
+    SearchButton.place(x=100,y=0)
 def SearchButtonAction():
     global S_data
     global SearchListBox
@@ -86,19 +94,6 @@ def SearchButtonAction():
     SearchListBox.configure(state='disabled')
 
 
-
-=======
-    label_1.configure(image=frame)
-    g_Tk.after(25, InitGif_1, ind)
-
-def InitGif_2(ind):
-    frame = frames_2[ind]
-    ind += 1
-    if ind == frameCnt_2:
-        ind = 0
-    label_2.configure(image=frame)
-    g_Tk.after(50, InitGif_2, ind)
->>>>>>> 28ca911c36553b30201d80f70725baac3259fef6
 
 def Search():
     import http.client
@@ -135,12 +130,10 @@ def Search():
 
         DataList.append((familyKorNm_text,fngsGnrlNm_text,fngsPilbkNo_text))
 
-<<<<<<< HEAD
     print(len(DataList))
     print("\n")
     global S_data
-=======
->>>>>>> 28ca911c36553b30201d80f70725baac3259fef6
+
     for i in range(len(DataList)):
         RenderText.insert(INSERT, "[")
         RenderText.insert(INSERT, i+1)
