@@ -6,7 +6,7 @@ g_Tk = Tk()
 g_Tk.geometry("1000x600")
 DataList = []
 url = "openapi.nature.go.kr"
-
+S_data=[]
 # st는 2번(학명) sw는 e -> 학명에 'e'가 들어가는것 출력
 SW = "e"
 
@@ -36,6 +36,56 @@ def InitGif(ind):
         ind = 0
     label.configure(image=frame)
     g_Tk.after(100, InitGif, ind)
+def InitSearchListBox():
+    global SearchListBox
+    ListBoxScrollbar = Scrollbar(g_Tk)
+    ListBoxScrollbar.pack()
+    ListBoxScrollbar.place(x=0, y=0)
+
+    TempFont = font.Font(g_Tk, size=15, weight='bold', family='Consolas')
+    SearchListBox = Listbox(g_Tk, font=TempFont, activestyle='none',
+                            width=20, height=20, borderwidth=1,
+                            yscrollcommand=ListBoxScrollbar.set)
+    unique_data_list = list(set([item[0] for item in DataList]))
+    for item in unique_data_list:
+        SearchListBox.insert('end', item)
+    SearchListBox.pack()
+    SearchListBox.place(x=10, y=100)
+
+    ListBoxScrollbar.config(command=SearchListBox.yview)
+
+def InitSearchButton():
+    TempFont= font.Font(g_Tk,size=20,weight='bold',family='Consolas')
+    SearchButton=Button(g_Tk,font = TempFont,text="검색",command=SearchButtonAction)
+    SearchButton.pack()
+    SearchButton.place(x=100   ,y=0)
+def SearchButtonAction():
+    global S_data
+    global SearchListBox
+    SearchListBox.configure(state='normal')
+    #SearchListBox.delete(0.0,END)
+    iSearchIndex=SearchListBox.curselection()[0]
+    unique_data_list = list(set([item[0] for item in DataList]))
+    M_search = unique_data_list[iSearchIndex][0]
+    S_data = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+    S_data.pack()
+    S_data.place(x=300, y=100)
+    for i in range(len(DataList)):
+        if DataList[i][0][0] == M_search:
+            S_data.insert('end', str(DataList[i][0]))
+            S_data.insert('end', "\n")
+            S_data.insert('end', str(DataList[i][1]))
+            S_data.insert('end', "\n")
+            S_data.insert('end', str(DataList[i][2]))
+            S_data.insert('end', "\n\n")
+
+    #RenderText.insert(INSERT, DataList[i][0])
+    #print(M_search)
+
+    SearchListBox.configure(state='disabled')
+
+
+
 
 def Search():
     import http.client
@@ -45,13 +95,13 @@ def Search():
 
     global DataList
     DataList.clear()
-
     strXml = req.read().decode('utf-8')
     print(strXml)
 
+
     from xml.etree import ElementTree
     tree = ElementTree.fromstring(strXml)
-
+    global M_search
     # item 엘리먼트를 가져옵니다.
     itemElements = tree.iter("item") #return list type
     # print(itemElements)
@@ -73,6 +123,8 @@ def Search():
         DataList.append((familyKorNm_text,fngsGnrlNm_text,fngsPilbkNo_text))
 
     print(len(DataList))
+    print("\n")
+    global S_data
     for i in range(len(DataList)):
         RenderText.insert(INSERT, "[")
         RenderText.insert(INSERT, i+1)
@@ -92,7 +144,21 @@ def Search():
     RenderTextScrollbar.place(x=375, y=200)
     RenderTextScrollbar.config(command=RenderText.yview)
     RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
+def InitRenderText():
+    global RenderText
 
+    RenderTextScrollbar = Scrollbar(g_Tk)
+    RenderTextScrollbar.pack()
+    RenderTextScrollbar.place(x=375, y=200)
+
+    TempFont = font.Font(g_Tk, size=10, family='Consolas')
+    RenderText = Text(g_Tk, width=49, height=27, borderwidth=12, relief='ridge', yscrollcommand=RenderTextScrollbar.set)
+    RenderText.pack()
+    RenderText.place(x=10, y=215)
+    RenderTextScrollbar.config(command=RenderText.yview)
+    RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
+
+    RenderText.configure(state='disabled')
 def update_clock():
     now = datetime.datetime.now()
     if(int(now.strftime("%H")) >= 13):
@@ -107,6 +173,9 @@ def update_clock():
     g_Tk.after(1000, update_clock)
     date_label.place(x=750,y=500)
     time_label.place(x=800,y=550)
+
+
+
 
 InitTopText()
 
@@ -124,4 +193,7 @@ time_label.pack()
 
 update_clock()
 Search()
+InitSearchListBox()
+InitSearchButton()
+
 g_Tk.mainloop()
