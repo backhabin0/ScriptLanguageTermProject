@@ -1,8 +1,13 @@
 from tkinter import *
 from tkinter import font
 import datetime
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
+from tkinter import messagebox, Toplevel
+
 
 g_Tk = Tk()
+style = ttk.Style("cosmo")
 g_Tk.geometry("1000x600")
 DataList = []
 url = "openapi.nature.go.kr"
@@ -68,6 +73,7 @@ def InitSearchButton():
     SearchButton=Button(g_Tk,font = TempFont,text="검색",command=SearchButtonAction)
     SearchButton.pack()
     SearchButton.place(x=70,y=565)
+
 def SearchButtonAction():
     global S_data
     global SearchListBox
@@ -190,6 +196,33 @@ def search_word():
     word = entry.get()  # 입력된 단어 가져오기
     print(word)
 
+def toggle_theme():
+    if dark_mode_var.get() == 1:
+        style = ttk.Style("darkly")
+    else:
+        style = ttk.Style("cosmo")
+
+def open_memo_window():
+    def save_memo():
+        memo_text = memo_entry.get("1.0", "end-1c")  # Get the text from the memo_entry widget
+
+        # Save the memo to a file with UTF-8 encoding
+        with open("memo.txt", "w", encoding="utf-8") as file:
+            file.write(memo_text)
+
+        messagebox.showinfo("Memo Saved", "Memo has been saved successfully!")
+
+    memo_window = Toplevel()
+    memo_window.title("Memo")
+
+    memo_label = Label(memo_window, text="Memo:")
+    memo_label.pack()
+
+    memo_entry = Text(memo_window, width=50, height=10)
+    memo_entry.pack()
+
+    save_button = Button(memo_window, text="Save Memo", command=save_memo)
+    save_button.pack()
 
 InitTopText()
 
@@ -223,5 +256,18 @@ entry.place(x=300, y=80)
 button = Button(g_Tk, text="검색", command=search_word)
 button.pack()
 button.place(x=640, y=80)
+
+# 메모
+OpenButton = Button(g_Tk, text="Open Memo", command=open_memo_window)
+OpenButton.pack()
+OpenButton.place(x=800, y=300)
+
+# 다크모드 체크박스 생성
+dark_mode_var = IntVar()
+dark_mode_checkbox = Checkbutton(g_Tk, text="다크 모드", variable=dark_mode_var, command=toggle_theme)
+dark_mode_checkbox.pack()
+dark_mode_checkbox.place(x=800,y=400)
+
+toggle_theme()  # 초기 배경 색상 설정
 
 g_Tk.mainloop()
