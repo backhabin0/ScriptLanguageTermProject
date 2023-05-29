@@ -178,6 +178,7 @@ def InitRenderText():
     RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
 
     RenderText.configure(state='disabled')
+
 def update_clock():
     now = datetime.datetime.now()
     if(int(now.strftime("%H")) >= 13):
@@ -193,9 +194,31 @@ def update_clock():
     date_label.place(x=750,y=500)
     time_label.place(x=800,y=550)
 
+
 def search_word():
     word = entry.get()  # 입력된 단어 가져오기
     print(word)
+
+    global S_data
+
+    if S_data:  # 기존에 생성된 Text 위젯이 있을 경우 제거
+        S_data.destroy()
+
+    S_data = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+    S_data.pack()
+    S_data.place(x=300, y=100)
+
+    for i in range(len(DataList)):
+        if word in DataList[i][1]:  # 입력된 단어가 국명 뒤의 내용에 포함되어 있다면
+            S_data.insert(INSERT, " 과국명: ")
+            S_data.insert(INSERT, DataList[i][0])
+            S_data.insert(INSERT, "\n")
+            S_data.insert(INSERT, " 국명: ")
+            S_data.insert(INSERT, DataList[i][1])
+            S_data.insert(INSERT, "\n")
+            S_data.insert(INSERT, " 도감번호: ")
+            S_data.insert(INSERT, DataList[i][2])
+            S_data.insert('end', "\n\n")
 
 def toggle_theme():
     if dark_mode_var.get() == 1:
@@ -204,19 +227,22 @@ def toggle_theme():
         style = ttk.Style("cosmo")
 
 def open_memo_window():
+    # 현재 날짜를 문자열로 가져오기
+    current_date = datetime.datetime.now().strftime("%Y%m%d")
     def save_memo():
-        memo_text = memo_entry.get("1.0", "end-1c")  # Get the text from the memo_entry widget
+        memo_text = memo_entry.get("1.0", "end-1c")
 
-        # Save the memo to a file with UTF-8 encoding
-        with open("memo.txt", "w", encoding="utf-8") as file:
+        file_name = f"Memo_{current_date}.txt"  # 파일 이름 생성
+
+        with open(file_name, "w", encoding="utf-8") as file:
             file.write(memo_text)
 
-        messagebox.showinfo("Memo Saved", "Memo has been saved successfully!")
+        messagebox.showinfo("Memo Saved", "메모가 정상적으로 저장되었습니다.")
 
     memo_window = Toplevel()
     memo_window.title("Memo")
 
-    memo_label = Label(memo_window, text="Memo:")
+    memo_label = Label(memo_window, text="Memo_"+current_date)
     memo_label.pack()
 
     memo_entry = Text(memo_window, width=50, height=10)
@@ -251,17 +277,17 @@ InitSearchButton()
 # 입력
 entry = Entry(g_Tk, width=22, font=('console 20'))
 entry.pack()
-entry.place(x=300, y=80)
+entry.place(x=300, y=60)
 
 # 검색 버튼
-button = Button(g_Tk, text="검색", command=search_word)
+button = Button(g_Tk, text="검색", command=search_word,width=8, height=2)
 button.pack()
-button.place(x=640, y=80)
+button.place(x=640, y=60)
 
 # 메모
-OpenButton = Button(g_Tk, text="Open Memo", command=open_memo_window)
+OpenButton = Button(g_Tk, text="Open Memo",font=('console 20'), command=open_memo_window)
 OpenButton.pack()
-OpenButton.place(x=800, y=300)
+OpenButton.place(x=770, y=300)
 
 # 다크모드 체크박스 생성
 dark_mode_var = IntVar()
