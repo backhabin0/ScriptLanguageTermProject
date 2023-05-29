@@ -77,14 +77,22 @@ def InitSearchButton():
 def SearchButtonAction():
     global S_data
     global SearchListBox
-    SearchListBox.configure(state='normal')
-    #SearchListBox.delete(0.0,END)
-    iSearchIndex=SearchListBox.curselection()[0]
+
+    iSearchIndex = SearchListBox.curselection()
+    if not iSearchIndex:  # 선택된 항목이 없을 경우 함수 종료
+        return
+
+    iSearchIndex = iSearchIndex[0]
     unique_data_list = list(set([item[0] for item in DataList]))
     M_search = unique_data_list[iSearchIndex][0]
+
+    if S_data:  # 기존에 생성된 Text 위젯이 있을 경우 제거
+        S_data.destroy()
+
     S_data = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
     S_data.pack()
     S_data.place(x=300, y=100)
+
     for i in range(len(DataList)):
         if DataList[i][0][0] == M_search:
             S_data.insert(INSERT, " 과국명: ")
@@ -97,13 +105,6 @@ def SearchButtonAction():
             S_data.insert(INSERT, DataList[i][2])
             S_data.insert('end', "\n\n")
 
-    #RenderText.insert(INSERT, DataList[i][0])
-    #print(M_search)
-
-    SearchListBox.configure(state='disabled')
-
-
-
 def Search():
     import http.client
     conn = http.client.HTTPConnection(url)
@@ -114,7 +115,6 @@ def Search():
     DataList.clear()
     strXml = req.read().decode('utf-8')
     # print(strXml)
-
 
     from xml.etree import ElementTree
     tree = ElementTree.fromstring(strXml)
@@ -162,6 +162,7 @@ def Search():
     RenderTextScrollbar.place(x=375, y=200)
     RenderTextScrollbar.config(command=RenderText.yview)
     RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
+
 def InitRenderText():
     global RenderText
 
