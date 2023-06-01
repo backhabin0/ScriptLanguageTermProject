@@ -7,9 +7,9 @@ from tkinter import messagebox, Toplevel
 
 
 g_Tk = Tk()
-style = ttk.Style("cosmo")
 g_Tk.geometry("1000x600")
 DataList = []
+mrList = []
 url = "openapi.nature.go.kr"
 S_data=[]
 # st는 2번(학명) sw는 e -> 학명에 'e'가 들어가는것 출력
@@ -30,7 +30,7 @@ date = datetime.date.today()
 
 def InitTopText():
     TempFont = font.Font(g_Tk, size=20, weight='bold', family='Malgun Gothic')
-    MainText = Label(g_Tk, font=TempFont, text="[버섯도리]")
+    MainText = Button(g_Tk, font=TempFont, text="[버섯도리]", command=ShowAllButtonAction)
     MainText.pack()
     MainText.place(x=400)
 
@@ -123,7 +123,6 @@ def Search():
     itemElements = tree.iter("item") #return list type
     # print(itemElements)
 
-
     RenderText = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
     RenderText.pack()
     RenderText.place(x=300,y=100)
@@ -137,31 +136,27 @@ def Search():
         fngsGnrlNm_text = fngsGnrlNm.text if fngsGnrlNm is not None else ""
         fngsPilbkNo_text = fngsPilbkNo.text if fngsPilbkNo is not None else ""
 
-        DataList.append((familyKorNm_text,fngsGnrlNm_text,fngsPilbkNo_text))
+        mrList.append((familyKorNm_text,fngsGnrlNm_text,fngsPilbkNo_text))
 
+    print(len(mrList))
+    DataList = mrList
     print(len(DataList))
     print("\n")
     global S_data
 
-    for i in range(len(DataList)):
+    for i in range(len(mrList)):
         RenderText.insert(INSERT, "[")
         RenderText.insert(INSERT, i+1)
         RenderText.insert(INSERT, "]\n")
         RenderText.insert(INSERT, " 과국명: ")
-        RenderText.insert(INSERT, DataList[i][0])
+        RenderText.insert(INSERT, mrList[i][0])
         RenderText.insert(INSERT, "\n")
         RenderText.insert(INSERT, " 국명: ")
-        RenderText.insert(INSERT, DataList[i][1])
+        RenderText.insert(INSERT, mrList[i][1])
         RenderText.insert(INSERT, "\n")
         RenderText.insert(INSERT, " 도감번호: ")
-        RenderText.insert(INSERT, DataList[i][2])
+        RenderText.insert(INSERT, mrList[i][2])
         RenderText.insert(INSERT, "\n\n")
-
-    RenderTextScrollbar = Scrollbar(g_Tk)
-    RenderTextScrollbar.pack()
-    RenderTextScrollbar.place(x=375, y=200)
-    RenderTextScrollbar.config(command=RenderText.yview)
-    RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
 
 def InitRenderText():
     global RenderText
@@ -194,7 +189,6 @@ def update_clock():
     date_label.place(x=750,y=500)
     time_label.place(x=800,y=550)
 
-
 def search_word():
     word = entry.get()  # 입력된 단어 가져오기
     print(word)
@@ -220,11 +214,32 @@ def search_word():
             S_data.insert(INSERT, DataList[i][2])
             S_data.insert('end', "\n\n")
 
+def ShowAllButtonAction():
+    global g_isSearched
+
+    RenderText = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+    RenderText.pack()
+    RenderText.place(x=300, y=100)
+
+    for i in range(len(mrList)):
+        RenderText.insert(INSERT, "[")
+        RenderText.insert(INSERT, i+1)
+        RenderText.insert(INSERT, "]\n")
+        RenderText.insert(INSERT, " 과국명: ")
+        RenderText.insert(INSERT, mrList[i][0])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 국명: ")
+        RenderText.insert(INSERT, mrList[i][1])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 도감번호: ")
+        RenderText.insert(INSERT, mrList[i][2])
+        RenderText.insert(INSERT, "\n\n")
+
 def toggle_theme():
     if dark_mode_var.get() == 1:
         style = ttk.Style("darkly")
     else:
-        style = ttk.Style("cosmo")
+        style = ttk.Style("minty")
 
 def open_memo_window():
     # 현재 날짜를 문자열로 가져오기
@@ -296,5 +311,7 @@ dark_mode_checkbox.pack()
 dark_mode_checkbox.place(x=800,y=400)
 
 toggle_theme()  # 초기 배경 색상 설정
+
+
 
 g_Tk.mainloop()
