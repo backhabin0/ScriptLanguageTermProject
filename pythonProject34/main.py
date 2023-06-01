@@ -4,9 +4,14 @@ import datetime
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox, Toplevel
-
+from PIL import ImageTk, Image
+import requests
+from io import BytesIO
+import urllib
+import urllib.request
 
 g_Tk = Tk()
+style = ttk.Style("cosmo")
 g_Tk.geometry("1000x600")
 DataList = []
 mrList = []
@@ -158,6 +163,7 @@ def Search():
         RenderText.insert(INSERT, mrList[i][2])
         RenderText.insert(INSERT, "\n\n")
 
+
 def InitRenderText():
     global RenderText
 
@@ -189,6 +195,87 @@ def update_clock():
     date_label.place(x=750,y=500)
     time_label.place(x=800,y=550)
 
+def ShowDetailedInfo(Q1):
+    que = "/openapi/service/rest/FungiService/fngsIlstrInfo?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&q1=" + Q1
+    SmrList = []
+    import http.client
+    conn = http.client.HTTPConnection(url)
+    conn.request("GET", que)
+    req = conn.getresponse()
+
+    strXml = req.read().decode('utf-8')
+    print(strXml)
+
+    from xml.etree import ElementTree
+    tree = ElementTree.fromstring(strXml)
+    global M_search
+    # item 엘리먼트를 가져옵니다.
+    itemElements = tree.iter("item")  # return list type
+    print(itemElements)
+
+    RenderText = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+    RenderText.pack()
+    RenderText.place(x=300, y=100)
+
+    for item in itemElements:
+        edible = item.find("cont12")
+        Occurrence  = item.find("cont21")
+        mrinfo = item.find("cont1")
+        pjinfo = item.find("cont7")
+
+        familyKorNm = item.find("familyKorNm")
+        fngsGnrlNm = item.find("fngsGnrlNm")
+
+        imgurl = item.find("imgUrl")
+
+        SmrList.append((edible.text,Occurrence.text,mrinfo.text,pjinfo.text,familyKorNm.text,fngsGnrlNm.text, imgurl.text))
+    print("\n")
+    global S_data
+
+    for i in range(len(SmrList)):
+        response = requests.get(SmrList[i][6])
+        image_data = response.content
+        im = Image.open(BytesIO(image_data))
+        # 이미지 크기 조정
+        new_width = 380  # 조정할 가로 너비
+        new_height = 200  # 조정할 세로 높이
+        resized_image = im.resize((new_width, new_height))
+        image = ImageTk.PhotoImage(resized_image)
+        imgL = Label(g_Tk, image=image)
+        imgL.place(x=300, y=100)
+        imgL.image = image  # 이미지 참조를 유지하기 위해 변수에 저장
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 과국명: ")
+        RenderText.insert(INSERT, SmrList[i][4])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 국명: ")
+        RenderText.insert(INSERT, SmrList[i][5])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 식용: ")
+        RenderText.insert(INSERT, SmrList[i][0])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 발생지: ")
+        RenderText.insert(INSERT, SmrList[i][1])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 버섯 정보: ")
+        RenderText.insert(INSERT, SmrList[i][2])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 포자 정보: ")
+        RenderText.insert(INSERT, SmrList[i][3])
+        RenderText.insert(INSERT, "\n\n")
+
 def search_word():
     word = entry.get()  # 입력된 단어 가져오기
     print(word)
@@ -203,16 +290,11 @@ def search_word():
     S_data.place(x=300, y=100)
 
     for i in range(len(DataList)):
-        if word in DataList[i][1]:  # 입력된 단어가 국명 뒤의 내용에 포함되어 있다면
-            S_data.insert(INSERT, " 과국명: ")
-            S_data.insert(INSERT, DataList[i][0])
-            S_data.insert(INSERT, "\n")
-            S_data.insert(INSERT, " 국명: ")
-            S_data.insert(INSERT, DataList[i][1])
-            S_data.insert(INSERT, "\n")
-            S_data.insert(INSERT, " 도감번호: ")
-            S_data.insert(INSERT, DataList[i][2])
-            S_data.insert('end', "\n\n")
+        if word == DataList[i][1] :  # 입력된 단어가 국명 뒤의 내용에 포함되어 있다면
+            Q1 = DataList[i][2]
+            print(Q1)
+            ShowDetailedInfo(Q1)
+
 
 def ShowAllButtonAction():
     global g_isSearched
@@ -239,7 +321,7 @@ def toggle_theme():
     if dark_mode_var.get() == 1:
         style = ttk.Style("darkly")
     else:
-        style = ttk.Style("minty")
+        style = ttk.Style("cosmo")
 
 def open_memo_window():
     # 현재 날짜를 문자열로 가져오기

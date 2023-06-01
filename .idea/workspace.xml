@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d3b182b5-0fdb-4d3f-ade1-60c07fdc2ed4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pythonProject34/Memo_20230530.txt" beforeDir="false" afterPath="$PROJECT_DIR$/pythonProject34/Memo_20230530.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pythonProject34/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/pythonProject34/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -22,13 +21,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/nhc08/OneDrive/바탕 화면/2023_1/스언어/ScriptLanguageTermProject"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/nhc08/OneDrive/바탕 화면/2023_1/스언어/ScriptLanguageTermProject&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\nhc08\OneDrive\바탕 화면\2023_1\스언어\ScriptLanguageTermProject\pythonProject34" />
