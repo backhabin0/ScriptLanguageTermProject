@@ -10,6 +10,8 @@ from io import BytesIO
 import urllib
 import urllib.request
 
+from googlemaps import Client
+
 g_Tk = Tk()
 style = ttk.Style("cosmo")
 g_Tk.geometry("1000x600")
@@ -17,9 +19,10 @@ DataList = []
 mrList = []
 url = "openapi.nature.go.kr"
 S_data=[]
+S_data2=[]
 # st는 2번(학명) sw는 e -> 학명에 'e'가 들어가는것 출력
 SW = "e"
-
+Favorite_data=[]
 # 인코딩 된 값을 넣은 query를 넣어요
 query = "/openapi/service/rest/FungiService/fngsIlstrSearch?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&st=2&sw="+ SW+"&numOfRows=1000&pageNo=1"
 
@@ -194,6 +197,77 @@ def update_clock():
     g_Tk.after(1000, update_clock)
     date_label.place(x=750,y=500)
     time_label.place(x=800,y=550)
+#즐겨찾기 버튼
+def favorite_insertbutton():
+    TempFont=font.Font(g_Tk,size=12,weight='bold',family='Consolas')
+    FavoriteButton=Button(g_Tk,font=TempFont,text="즐겨찾기 추가",command=FavoriteinsertButtonAction)
+    FavoriteButton.pack()
+    FavoriteButton.place(x=700,y=60)
+    word1 = entry.get()
+def favorite_button():
+    TempFont=font.Font(g_Tk,size=12,weight='bold',family='Consolas')
+    FavoriteButton=Button(g_Tk,font=TempFont,text="즐겨찾기 보기",command=FavoriteButtonAction)
+    FavoriteButton.pack()
+    FavoriteButton.place(x=700,y=90)
+    word1 = entry.get()
+    print(word1)
+def FavoriteinsertButtonAction():
+    print("즐겨찾기 버튼 실행")
+
+def FavoriteButtonAction():
+    global S_data1
+    global SearchListBox
+    print("즐겨찾기 실행 버튼 ")
+    print("이거"+Favorite_data[0])
+    for i in range(len(DataList)):
+        if Favorite_data[0] == DataList[i][1] :  # 입력된 단어가 국명 뒤의 내용에 포함되어 있다면
+            Q1 = DataList[i][2]
+            print(Q1)
+            ShowDetailedInfo(Q1)
+    for i in range(len(DataList)):
+        response = requests.get(DataList[i][6])
+        image_data = response.content
+        im = Image.open(BytesIO(image_data))
+        # 이미지 크기 조정
+        new_width = 380  # 조정할 가로 너비
+        new_height = 200  # 조정할 세로 높이
+        resized_image = im.resize((new_width, new_height))
+        image = ImageTk.PhotoImage(resized_image)
+        imgL = Label(g_Tk, image=image)
+        imgL.place(x=300, y=100)
+        imgL.image = image  # 이미지 참조를 유지하기 위해 변수에 저장
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 과국명: ")
+        RenderText.insert(INSERT, DataList[i][4])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 국명: ")
+        RenderText.insert(INSERT, DataList[i][5])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 식용: ")
+        RenderText.insert(INSERT, DataList[i][0])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 발생지: ")
+        RenderText.insert(INSERT, DataList[i][1])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 버섯 정보: ")
+        RenderText.insert(INSERT, DataList[i][2])
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, " 포자 정보: ")
+        RenderText.insert(INSERT, DataList[i][3])
+        RenderText.insert(INSERT, "\n\n")
+
 
 def ShowDetailedInfo(Q1):
     que = "/openapi/service/rest/FungiService/fngsIlstrInfo?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&q1=" + Q1
@@ -278,7 +352,33 @@ def ShowDetailedInfo(Q1):
 
 def search_word():
     word = entry.get()  # 입력된 단어 가져오기
+    #Favorite_data.insert(word)
+    global S_data1
+    global SearchListBox
+
+    S_data1 = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+    S_data1.pack()
+    S_data1.place(x=300, y=100)
+    for i in range(len(DataList)):
+        if DataList[i][0][0] == word:
+            RenderText.insert(INSERT, "[")
+            RenderText.insert(INSERT, i + 1)
+            RenderText.insert(INSERT, "]\n")
+            RenderText.insert(INSERT, " 과국명: ")
+            RenderText.insert(INSERT, DataList[i][0])
+            RenderText.insert(INSERT, "\n")
+            RenderText.insert(INSERT, " 국명: ")
+            RenderText.insert(INSERT, DataList[i][1])
+            RenderText.insert(INSERT, "\n")
+            RenderText.insert(INSERT, " 도감번호: ")
+            RenderText.insert(INSERT, DataList[i][2])
+            RenderText.insert(INSERT, "\n\n")
+    SearchListBox.configure(state='disabled')
+    # RenderText.insert(INSERT, DataList[i][0])
+    # print(M_search)
+
     print(word)
+    Favorite_data.append(word)
 
     global S_data
 
@@ -348,6 +448,7 @@ def open_memo_window():
     save_button = Button(memo_window, text="Save Memo", command=save_memo)
     save_button.pack()
 
+
 InitTopText()
 
 # gif 부분 입니다
@@ -393,7 +494,8 @@ dark_mode_checkbox.pack()
 dark_mode_checkbox.place(x=800,y=400)
 
 toggle_theme()  # 초기 배경 색상 설정
-
+favorite_insertbutton()
+favorite_button()
 
 
 g_Tk.mainloop()
