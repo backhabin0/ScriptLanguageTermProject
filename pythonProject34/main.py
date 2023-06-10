@@ -9,8 +9,14 @@ import requests
 from io import BytesIO
 import urllib
 import urllib.request
-
 from googlemaps import Client
+
+import telegram
+
+token = "5993979236:AAFVaX4gPqSz2jHhO-Iko9wT5H0QOo2szMA"
+chat_id_f = "6184560880"
+chat_id_h = "6184560880"
+bot = telegram.Bot(token=token)
 
 g_Tk = Tk()
 style = ttk.Style("cosmo")
@@ -197,6 +203,7 @@ def update_clock():
     g_Tk.after(1000, update_clock)
     date_label.place(x=750,y=500)
     time_label.place(x=800,y=550)
+
 #즐겨찾기 버튼
 def favorite_insertbutton():
     TempFont=font.Font(g_Tk,size=12,weight='bold',family='Consolas')
@@ -350,6 +357,20 @@ def ShowDetailedInfo(Q1):
         RenderText.insert(INSERT, SmrList[i][3])
         RenderText.insert(INSERT, "\n\n")
 
+    detailed_info = []
+    for i in range(len(SmrList)):
+        detailed_info.append(f"과국명: {SmrList[i][4]}\n")
+        detailed_info.append(f"국명: {SmrList[i][5]}\n")
+        detailed_info.append(f"식용: {SmrList[i][0]}\n")
+        detailed_info.append(f"발생지: {SmrList[i][1]}\n")
+        detailed_info.append(f"버섯 정보: {SmrList[i][2]}\n")
+        detailed_info.append(f"포자 정보: {SmrList[i][3]}\n")
+        detailed_info.append("\n")
+
+    bot.sendMessage(chat_id=chat_id_f, text="\n".join(detailed_info))
+    bot.sendMessage(chat_id=chat_id_h, text="\n".join(detailed_info))
+
+
 def search_word():
     word = entry.get()  # 입력된 단어 가져오기
     #Favorite_data.insert(word)
@@ -390,7 +411,7 @@ def search_word():
     S_data.place(x=300, y=100)
 
     for i in range(len(DataList)):
-        if word == DataList[i][1] :  # 입력된 단어가 국명 뒤의 내용에 포함되어 있다면
+        if word == DataList[i][1]:  # 입력된 단어가 국명 뒤의 내용에 포함되어 있다면
             Q1 = DataList[i][2]
             print(Q1)
             ShowDetailedInfo(Q1)
@@ -447,7 +468,6 @@ def open_memo_window():
 
     save_button = Button(memo_window, text="Save Memo", command=save_memo)
     save_button.pack()
-
 
 InitTopText()
 
