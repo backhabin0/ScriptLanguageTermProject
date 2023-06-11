@@ -503,6 +503,7 @@ dark_mode_checkbox.place(x=800,y=400)
 toggle_theme()  # 초기 배경 색상 설정
 favorite_insertbutton()
 favorite_button()
+graph_button()
 
 
 g_Tk.mainloop()
