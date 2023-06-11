@@ -18,7 +18,7 @@ import telegram
 
 token = "5993979236:AAFVaX4gPqSz2jHhO-Iko9wT5H0QOo2szMA"
 chat_id_f = "6184560880"
-chat_id_h = "6184560880"
+chat_id_h = "6052431050"
 bot = telegram.Bot(token=token)
 
 g_Tk = Tk()
