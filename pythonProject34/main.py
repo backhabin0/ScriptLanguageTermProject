@@ -28,7 +28,9 @@ DataList = []
 mrList = []
 url = "openapi.nature.go.kr"
 S_data=[]
-S_data2=[]
+
+poisonList = []
+n = None
 # st는 2번(학명) sw는 e -> 학명에 'e'가 들어가는것 출력
 SW = "e"
 Favorite_data=[]
@@ -122,6 +124,7 @@ def SearchButtonAction():
             S_data.insert(INSERT, DataList[i][2])
             S_data.insert('end', "\n\n")
 
+
 def Search():
     import http.client
     conn = http.client.HTTPConnection(url)
@@ -160,6 +163,12 @@ def Search():
     print(len(DataList))
     print("\n")
     global S_data
+    for i in range(len(mrList)):
+        p_num = mrList[i][2]
+        SavePoisonInfo(p_num)
+
+    print(poisonList[0][1])
+
 
     for i in range(len(mrList)):
         RenderText.insert(INSERT, "[")
@@ -357,6 +366,32 @@ def ShowDetailedInfo(Q1):
     bot.sendMessage(chat_id=chat_id_f, text="\n".join(detailed_info))
     bot.sendMessage(chat_id=chat_id_h, text="\n".join(detailed_info))
 
+def SavePoisonInfo(Q1):
+    que = "/openapi/service/rest/FungiService/fngsIlstrInfo?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&q1=" + Q1
+    poison_info = []
+    import http.client
+    con = http.client.HTTPConnection(url)
+    con.request("GET", que)
+    req = con.getresponse()
+
+    strXml = req.read().decode('utf-8')
+
+    from xml.etree import ElementTree
+    tree = ElementTree.fromstring(strXml)
+    global M_search
+    # item 엘리먼트를 가져옵니다.
+    itemElements = tree.iter("item")  # return list type
+
+    RenderText = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+    RenderText.pack()
+    RenderText.place(x=300, y=100)
+
+    for item in itemElements:
+        edible = item.find("cont12")
+        familyKorNm = item.find("familyKorNm")
+        poison_info.append((edible.text,familyKorNm.text))
+        for info in poison_info:
+            poisonList.append(list(info))
 
 def search_word():
     word = entry.get()  # 입력된 단어 가져오기
