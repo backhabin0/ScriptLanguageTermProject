@@ -10,7 +10,10 @@ from io import BytesIO
 import urllib
 import urllib.request
 from googlemaps import Client
+import matplotlib.pyplot as plt
 
+import urllib
+import urllib.request
 import telegram
 
 token = "5993979236:AAFVaX4gPqSz2jHhO-Iko9wT5H0QOo2szMA"
@@ -206,11 +209,17 @@ def update_clock():
 
 #즐겨찾기 버튼
 def favorite_insertbutton():
-    TempFont=font.Font(g_Tk,size=12,weight='bold',family='Consolas')
-    FavoriteButton=Button(g_Tk,font=TempFont,text="즐겨찾기 추가",command=FavoriteinsertButtonAction)
+    TempFont = font.Font(g_Tk, size=12, weight='bold', family='Consolas')
+    FavoriteButton = Button(g_Tk, font=TempFont, text="즐겨찾기 추가", command=FavoriteinsertButtonAction)
     FavoriteButton.pack()
-    FavoriteButton.place(x=700,y=60)
-    word1 = entry.get()
+    FavoriteButton.place(x=700, y=60)
+
+    def on_button_click():
+        word1 = entry.get()  # 엔트리 위젯의 값을 가져옴
+        print(word1)  # 테스트를 위해 값을 출력함
+        # 필요한 경우 값을 사용하여 다른 작업 수행
+
+    FavoriteButton.configure(command=on_button_click)
 def favorite_button():
     TempFont=font.Font(g_Tk,size=12,weight='bold',family='Consolas')
     FavoriteButton=Button(g_Tk,font=TempFont,text="즐겨찾기 보기",command=FavoriteButtonAction)
@@ -231,51 +240,29 @@ def FavoriteButtonAction():
             Q1 = DataList[i][2]
             print(Q1)
             ShowDetailedInfo(Q1)
-    for i in range(len(DataList)):
-        response = requests.get(DataList[i][6])
-        image_data = response.content
-        im = Image.open(BytesIO(image_data))
-        # 이미지 크기 조정
-        new_width = 380  # 조정할 가로 너비
-        new_height = 200  # 조정할 세로 높이
-        resized_image = im.resize((new_width, new_height))
-        image = ImageTk.PhotoImage(resized_image)
-        imgL = Label(g_Tk, image=image)
-        imgL.place(x=300, y=100)
-        imgL.image = image  # 이미지 참조를 유지하기 위해 변수에 저장
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, " 과국명: ")
-        RenderText.insert(INSERT, DataList[i][4])
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, " 국명: ")
-        RenderText.insert(INSERT, DataList[i][5])
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, " 식용: ")
-        RenderText.insert(INSERT, DataList[i][0])
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, " 발생지: ")
-        RenderText.insert(INSERT, DataList[i][1])
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, " 버섯 정보: ")
-        RenderText.insert(INSERT, DataList[i][2])
-        RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, " 포자 정보: ")
-        RenderText.insert(INSERT, DataList[i][3])
-        RenderText.insert(INSERT, "\n\n")
 
+def graph_button():
+    TempFont = font.Font(g_Tk, size=12, weight='bold', family='Consolas')
+    FavoriteButton = Button(g_Tk, font=("console", 20), text="그래프", command=graph_action)
+    FavoriteButton.pack()
+    FavoriteButton.place(x=900, y=60)
+def graph_action():
+    categories=[item[0] for item in DataList]
+    category_count={}
+    for category in categories:
+        if category in category_count:
+            category_count[category]+=1
+        else:
+            category_count[category]=1
+    labels=list(category_count.keys())
+    values=list(category_count.values())
 
+    plt.bar(labels,values)
+    plt.xlabel('Category')
+    plt.ylabel('Frequency')
+    plt.title('버섯 종류별 수')
+    plt.xticks(rotation=45)
+    plt.show()
 def ShowDetailedInfo(Q1):
     que = "/openapi/service/rest/FungiService/fngsIlstrInfo?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&q1=" + Q1
     SmrList = []
