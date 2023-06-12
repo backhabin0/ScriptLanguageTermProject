@@ -7,13 +7,10 @@ from tkinter import messagebox, Toplevel
 from PIL import ImageTk, Image
 import requests
 from io import BytesIO
-import urllib
-import urllib.request
-from googlemaps import Client
+import subprocess
+# AIzaSyCsVH9cdxc_Pm57ucgLNKcDQdFPKnnq0S0
 import matplotlib.pyplot as plt
 
-import urllib
-import urllib.request
 import telegram
 
 token = "5993979236:AAFVaX4gPqSz2jHhO-Iko9wT5H0QOo2szMA"
@@ -251,10 +248,14 @@ def FavoriteButtonAction():
             ShowDetailedInfo(Q1)
 
 def graph_button():
-    TempFont = font.Font(g_Tk, size=12, weight='bold', family='Consolas')
-    FavoriteButton = Button(g_Tk, font=("console", 20), text="그래프", command=graph_action)
+    image_path = "bar-chart.png"  # Path to your button image file
+    button_image = Image.open(image_path)
+    button_image = button_image.resize((80, 80), Image.LANCZOS)  # Resize the image
+    button_photo = ImageTk.PhotoImage(button_image)
+    FavoriteButton = Button(g_Tk, image=button_photo, command=graph_action)
+    FavoriteButton.image = button_photo
     FavoriteButton.pack()
-    FavoriteButton.place(x=900, y=60)
+    FavoriteButton.place(x=700, y=120)
 def graph_action():
     categories=[item[0] for item in DataList]
     category_count={}
@@ -573,7 +574,21 @@ def open_memo_window():
     save_button = Button(memo_window, text="Save Memo", command=save_memo)
     save_button.pack()
 
+def OpenMapWindow():
+    subprocess.call(['python', 'map.py'])
+
+def mapbutton():
+    image_path = "map.png"  # Path to your button image file
+    button_image = Image.open(image_path)
+    button_image = button_image.resize((80, 80), Image.LANCZOS)  # Resize the image
+    button_photo = ImageTk.PhotoImage(button_image)
+    SearchButton = Button(g_Tk, image=button_photo, command=OpenMapWindow)
+    SearchButton.image = button_photo
+    SearchButton.pack()
+    SearchButton.place(x=800,y=120)
+
 InitTopText()
+mapbutton()
 
 # gif 부분 입니다
 label_1 = Label(g_Tk, bg='white')
@@ -607,7 +622,12 @@ button.pack()
 button.place(x=640, y=60)
 
 # 메모
-OpenButton = Button(g_Tk, text="Open Memo",font=('console 20'), command=open_memo_window)
+image_path = "memo.png"  # Path to your button image file
+button_image = Image.open(image_path)
+button_image = button_image.resize((80, 80), Image.LANCZOS)  # Resize the image
+button_photo = ImageTk.PhotoImage(button_image)
+OpenButton = Button(g_Tk, image=button_photo, command=open_memo_window)
+OpenButton.image = button_photo
 OpenButton.pack()
 OpenButton.place(x=770, y=300)
 
@@ -634,8 +654,6 @@ checkbox_poison_var=IntVar()
 checkbox=Checkbutton(g_Tk,text="독버섯",variable=checkbox_poison_var,command=checkbox_poison)
 checkbox.pack()
 checkbox.place(x=900,y=160)
-
-
 
 toggle_theme()  # 초기 배경 색상 설정
 favorite_insertbutton()
