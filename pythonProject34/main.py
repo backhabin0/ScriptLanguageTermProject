@@ -167,7 +167,7 @@ def Search():
         p_num = mrList[i][2]
         SavePoisonInfo(p_num)
 
-    print(poisonList[0][1])
+    print(poisonList)
 
 
     for i in range(len(mrList)):
@@ -269,9 +269,91 @@ def graph_action():
     plt.bar(labels,values)
     plt.xlabel('Category')
     plt.ylabel('Frequency')
-    plt.title('버섯 종류별 수')
+    plt.title('put your mouse curser ')
     plt.xticks(rotation=45)
     plt.show()
+def checkbox_button():
+    pass
+def checkbox_medical():
+    global S_data
+    medicalList = []
+    edibleListnum = []
+    if checkbox_medical_var.get() == 1:
+        S_data = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+        S_data.pack()
+        S_data.place(x=300, y=100)
+        for i in range(len(poisonList)):
+            if poisonList[i][0] == '약용':
+                medicalList.append(poisonList[i][1])
+        for i in range(len(DataList)):
+            for j in range(len(medicalList)):
+                if DataList[i][1] == medicalList[j]:
+                    S_data.insert(INSERT, " 과국명: ")
+                    S_data.insert(INSERT, DataList[i][0])
+                    S_data.insert(INSERT, "\n")
+                    S_data.insert(INSERT, " 국명: ")
+                    S_data.insert(INSERT, DataList[i][1])
+                    S_data.insert(INSERT, "\n")
+                    S_data.insert(INSERT, " 도감번호: ")
+                    S_data.insert(INSERT, DataList[i][2])
+                    S_data.insert('end', "\n\n")
+    else:
+        if S_data:
+            S_data.destroy()
+def checkbox_edible():
+    global S_data
+    edibleList = []
+    edibleListnum = []
+    if checkbox_edible_var.get() == 1:
+        S_data = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+        S_data.pack()
+        S_data.place(x=300, y=100)
+        for i in range(len(poisonList)):
+            if poisonList[i][0] == '식용':
+                edibleList.append(poisonList[i][1])
+        for i in range(len(DataList)):
+            for j in range(len(edibleList)):
+                if DataList[i][1] == edibleList[j]:
+                    S_data.insert(INSERT, " 과국명: ")
+                    S_data.insert(INSERT, DataList[i][0])
+                    S_data.insert(INSERT, "\n")
+                    S_data.insert(INSERT, " 국명: ")
+                    S_data.insert(INSERT, DataList[i][1])
+                    S_data.insert(INSERT, "\n")
+                    S_data.insert(INSERT, " 도감번호: ")
+                    S_data.insert(INSERT, DataList[i][2])
+                    S_data.insert('end', "\n\n")
+    else:
+        if S_data:
+            S_data.destroy()
+
+def checkbox_poison():
+    global S_data
+    edibleList = []
+    edibleListnum = []
+    if checkbox_poison_var.get() == 1:
+        S_data = Text(g_Tk, width=50, height=27, borderwidth=12, relief='flat')
+        S_data.pack()
+        S_data.place(x=300, y=100)
+        for i in range(len(poisonList)):
+            if poisonList[i][0] == '독버섯':
+                edibleList.append(poisonList[i][1])
+        for i in range(len(DataList)):
+            for j in range(len(edibleList)):
+                if DataList[i][1] == edibleList[j]:
+                    S_data.insert(INSERT, " 과국명: ")
+                    S_data.insert(INSERT, DataList[i][0])
+                    S_data.insert(INSERT, "\n")
+                    S_data.insert(INSERT, " 국명: ")
+                    S_data.insert(INSERT, DataList[i][1])
+                    S_data.insert(INSERT, "\n")
+                    S_data.insert(INSERT, " 도감번호: ")
+                    S_data.insert(INSERT, DataList[i][2])
+                    S_data.insert('end', "\n\n")
+    else:
+        if S_data:
+            S_data.destroy()
+
 def ShowDetailedInfo(Q1):
     que = "/openapi/service/rest/FungiService/fngsIlstrInfo?ServiceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&q1=" + Q1
     SmrList = []
@@ -388,7 +470,7 @@ def SavePoisonInfo(Q1):
 
     for item in itemElements:
         edible = item.find("cont12")
-        familyKorNm = item.find("familyKorNm")
+        familyKorNm = item.find("fngsGnrlNm")
         poison_info.append((edible.text,familyKorNm.text))
         for info in poison_info:
             poisonList.append(list(info))
@@ -467,7 +549,7 @@ def toggle_theme():
         style = ttk.Style("cosmo")
 
 def open_memo_window():
-    # 현재 날짜를 문자열로 가져오기
+    # 현재 날짜를 문자열로 가져오기poi
     current_date = datetime.datetime.now().strftime("%Y%m%d")
     def save_memo():
         memo_text = memo_entry.get("1.0", "end-1c")
@@ -535,10 +617,29 @@ dark_mode_checkbox = Checkbutton(g_Tk, text="다크 모드", variable=dark_mode_
 dark_mode_checkbox.pack()
 dark_mode_checkbox.place(x=800,y=400)
 
+#체크박스
+checkbox_medical_var=IntVar()
+checkbox=Checkbutton(g_Tk,text="약용",variable=checkbox_medical_var,command=checkbox_medical)
+checkbox.pack()
+checkbox.place(x=900,y=120)
+
+#체크박스
+checkbox_edible_var=IntVar()
+checkbox=Checkbutton(g_Tk,text="식용",variable=checkbox_edible_var,command=checkbox_edible)
+checkbox.pack()
+checkbox.place(x=900,y=140)
+
+#체크박스
+checkbox_poison_var=IntVar()
+checkbox=Checkbutton(g_Tk,text="독버섯",variable=checkbox_poison_var,command=checkbox_poison)
+checkbox.pack()
+checkbox.place(x=900,y=160)
+
+
+
 toggle_theme()  # 초기 배경 색상 설정
 favorite_insertbutton()
 favorite_button()
 graph_button()
-
 
 g_Tk.mainloop()
