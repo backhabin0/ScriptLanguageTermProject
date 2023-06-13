@@ -5,6 +5,7 @@ import requests
 import io
 import http.client
 from xml.etree import ElementTree
+import spam
 
 url = "apis.data.go.kr"
 query = "/B553662/peakPoiInfoService/getPeakPoiInfoList?serviceKey=fGahpMpOdPXZYI3PiwdkIW%2BXFL6ElAoipUQonJDz7xVIbvq7ZipdgE1jIdrHjVztgXaFZA2AUpuKAqSyS9GtCg%3D%3D&numOfRows=10000&pageNo=1&type=xml"
@@ -39,9 +40,7 @@ for item in itemElements:
 
     mapList.append((placeNm_text, lat_text, lot_text))
 
-print(len(mapList))
-print(mapList)
-print("\n")
+
 global S_data
 
 
@@ -102,4 +101,5 @@ def SearchButtonAction():
 
 InitSearchButton()
 InitSearchListBox()
+spam.PrintList(mapList)
 g_Tk.mainloop()
